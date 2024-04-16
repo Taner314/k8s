@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "AdGuardDNS.fullname" . }}
+  namespace: {{ .Chart.Name }}
   labels:
     {{- include "AdGuardDNS.labels" . | nindent 4 }}
 spec:
@@ -36,10 +37,14 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.service.ports }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
+          {{- range . }}
+            - containerPort: {{ .targetPort }}
+              protocol: {{ .protocol }}
+              name: {{ .name }}
+            {{- end}}
+            {{- end}}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:

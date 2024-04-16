@@ -2,3 +2,4 @@ apiVersion: v2
 name: AdGuard-DNS
 version: v0.0.4
 type: application
+deprecated: true

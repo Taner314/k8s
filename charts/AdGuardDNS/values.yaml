@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: adguard
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  # Ovrrides the image tag whose default is the chart appVersion.
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -16,7 +16,7 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Automatically mount a ServiceAccount's API credentials?
   automount: true
   # Annotations to add to the service account
@@ -41,7 +41,21 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  ip: 192.168.6.1
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+    name: http-initial
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    name: http
+  - protocol: UDP
+    port: 53
+    targetPort: 53
+    name: dns
+
 
 ingress:
   enabled: false
