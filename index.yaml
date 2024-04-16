@@ -80,6 +80,16 @@ entries:
     version: 0.0.2
   adguarddns:
   - apiVersion: v2
+    appVersion: latest
+    created: "2024-04-16T21:18:54.190896843Z"
+    description: A Helm chart for Kubernetes
+    digest: f30683148234ba9334bf907b9d3025e4492a8ab4b42630211171462fb450edb9
+    name: adguarddns
+    type: application
+    urls:
+    - https://github.com/Taner314/k8s/releases/download/adguarddns-0.0.9/adguarddns-0.0.9.tgz
+    version: 0.0.9
+  - apiVersion: v2
     appVersion: 1.16.0
     created: "2024-04-16T21:05:19.511965813Z"
     description: A Helm chart for Kubernetes
@@ -89,4 +99,4 @@ entries:
     urls:
     - https://github.com/Taner314/k8s/releases/download/adguarddns-0.0.8/adguarddns-0.0.8.tgz
     version: 0.0.8
-generated: "2024-04-16T21:05:19.511989958Z"
+generated: "2024-04-16T21:18:54.190966402Z"
