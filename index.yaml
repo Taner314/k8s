@@ -20,6 +20,16 @@ entries:
   AdGuardDNS:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-04-16T20:44:37.732362876Z"
+    description: A Helm chart for Kubernetes
+    digest: afe40d4b80a5e0047e1f711eb0c5871e3c2b805fd8a93210634d54651274b008
+    name: AdGuardDNS
+    type: application
+    urls:
+    - https://github.com/Taner314/k8s/releases/download/AdGuardDNS-0.0.4/AdGuardDNS-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-04-16T23:31:45.8256753+03:00"
     description: A Helm chart for Kubernetes
     digest: e37bd5a7e600480524ad997cf6a22dc5da56268fff5900ffe357e8d0805e625e
@@ -38,4 +48,4 @@ entries:
     urls:
     - https://github.com/Taner314/k8s/releases/download/AdGuardDNS-0.0.2/AdGuardDNS-0.0.2.tgz
     version: 0.0.2
-generated: "2024-04-16T23:31:45.8256753+03:00"
+generated: "2024-04-16T20:44:37.732382433Z"
