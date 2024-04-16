@@ -1,0 +1,4 @@
+apiVersion: v2
+name: AdGuard-DNS
+version: v0.0.2
+type: application

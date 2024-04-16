@@ -1,0 +1,25 @@
+# === Services ===
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguard-service
+  namespace: adguard
+spec:
+  - clusterIP: 192.168.6.1
+  selector:
+    app: adguard
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+    name: http-initial
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    name: http
+  - protocol: UDP
+    port: 53
+    targetPort: 53
+    name: dns
+  type: ClusterIP

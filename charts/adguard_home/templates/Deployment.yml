@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard-deployment
+  namespace: adguard
+spec:
+  replicas: 1
+  # Basically this says 'search for containers with label on it' this is needed so our deployment knows
+  # what containers it should look for, and so without it, shit wouldn't work
+  selector: 
+    matchLabels:
+      app: adguard
+  # This section marks description of template for deployment containers
+  template: 
+    # Place a label 'adguard' on containers
+    metadata:
+      labels:
+        app: adguard
+    # Define container specification
+    spec:
+      containers:
+      - name: adguard-home
+        image: adguard/adguardhome:latest
+        # ConfigMap - basically your standart enviroment values, what can be accessed by any container from the
+        # deployment, if it is necesary. Beware what ConfigMap limit is 1 mb of data.
+        # env:
+        # - name: AGH_CONFIG # This is '.env' value we are need to pass to pod. Pod will see it under that name
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: adguard-config # This is ConfigMap name, defined in it's metadata
+        #       key: AdGuardHome.yaml # This is key name, withch we are referencing
+        # Standart port allocation FOR POD, not service. These are NOT accesible from outside unless you define
+        # them as services later.
+        ports:
+        - containerPort: 53 #dns
+          name: dns
+          protocol: UDP
+        - containerPort: 3000 #initial setup
+          name: http-initial
+        - containerPort: 80 #web gui
+          name: http
+          protocol: TCP
+        # Define our volume mounts. Quire similar to docker-compose style, except we will need to specify some more
+        # data later down the line.
+        volumeMounts:
+        - name: adguard-data
+          mountPath: /opt/adguardhome/work
+        - name: adguard-conf
+          mountPath: /opt/adguardhome/conf
+      volumes:
+      - name: adguard-data
+        persistentVolumeClaim:
+          claimName: adguard-pvc-work
+      - name: adguard-conf
+        persistentVolumeClaim:
+          claimName: adguard-pvc-conf

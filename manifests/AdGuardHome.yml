@@ -1,0 +1,162 @@
+
+--- # === Name Space ===
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: adguard
+
+--- # === Deployment ===
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard-deployment
+  namespace: adguard
+spec:
+  replicas: 1
+  # Basically this says 'search for containers with label on it' this is needed so our deployment knows
+  # what containers it should look for, and so without it, shit wouldn't work
+  selector: 
+    matchLabels:
+      app: adguard
+  # This section marks description of template for deployment containers
+  template: 
+    # Place a label 'adguard' on containers
+    metadata:
+      labels:
+        app: adguard
+    # Define container specification
+    spec:
+      containers:
+      - name: adguard-home
+        image: adguard/adguardhome:latest
+        # ConfigMap - basically your standart enviroment values, what can be accessed by any container from the
+        # deployment, if it is necesary. Beware what ConfigMap limit is 1 mb of data.
+        # env:
+        # - name: AGH_CONFIG # This is '.env' value we are need to pass to pod. Pod will see it under that name
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: adguard-config # This is ConfigMap name, defined in it's metadata
+        #       key: AdGuardHome.yaml # This is key name, withch we are referencing
+        # Standart port allocation FOR POD, not service. These are NOT accesible from outside unless you define
+        # them as services later.
+        ports:
+        - containerPort: 53 #dns
+          name: dns
+          protocol: UDP
+        - containerPort: 3000 #initial setup
+          name: http-initial
+        - containerPort: 80 #web gui
+          name: http
+          protocol: TCP
+        # Define our volume mounts. Quire similar to docker-compose style, except we will need to specify some more
+        # data later down the line.
+        volumeMounts:
+        - name: adguard-data
+          mountPath: /opt/adguardhome/work
+        - name: adguard-conf
+          mountPath: /opt/adguardhome/conf
+      volumes:
+      - name: adguard-data
+        persistentVolumeClaim:
+          claimName: adguard-pvc-work
+      - name: adguard-conf
+        persistentVolumeClaim:
+          claimName: adguard-pvc-conf
+
+--- # === Presistant Volume 'adguard-pv-work' ===
+
+apiVersion: v1
+kind: PersistentVolume # Is our initial 'bucket' we use to store data
+metadata:
+  name: adguard-pv-work
+  namespace: adguard
+spec:
+  capacity: # Sets maximum capacity what can be reqested from this volume
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce # Allows acces only from single node
+  nfs:
+    server: 192.168.6.3
+    path: /mnt/Main/k8s/AdGuardHome/work
+    readOnly: false
+  mountOptions:
+    - nfsvers=4.2
+
+--- # === Presistant Volume 'adguard-pv-conf' ===
+
+apiVersion: v1
+kind: PersistentVolume # Is our initial 'bucket' we use to store data
+metadata:
+  name: adguard-pv-conf
+  namespace: adguard
+spec:
+  capacity: # Sets maximum capacity what can be reqested from this volume
+    storage: 512Mi
+  accessModes:
+    - ReadWriteOnce # Allows acces only from single node
+  nfs:
+    server: 192.168.6.3
+    path: /mnt/Main/k8s/AdGuardHome/conf
+    readOnly: false
+  mountOptions:
+    - nfsvers=4.2
+
+--- # === Presistant Volume Claim 'adguard-pv-work' ===
+
+apiVersion: v1
+kind: PersistentVolumeClaim # Out pod claim to use. Eats up from PresistentVolume
+metadata:
+  name: adguard-pvc-work
+  namespace: adguard
+spec:
+  accessModes:
+    - ReadWriteOnce # Allows acces only from single node
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: adguard-pv-work
+
+--- # === Presistant Volume Claim 'adguard-pv-conf' ===
+
+apiVersion: v1
+kind: PersistentVolumeClaim # Out pod claim to use. Eats up from PresistentVolume
+metadata:
+  name: adguard-pvc-conf
+  namespace: adguard
+spec:
+  accessModes:
+    - ReadWriteOnce # Allows acces only from single node
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 512Mi
+  volumeName: adguard-pv-conf
+
+--- # === Services ===
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguard-service
+  namespace: adguard
+spec:
+  - clusterIP: 192.168.6.1
+  selector:
+    app: adguard
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+    name: http-initial
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    name: http
+  - protocol: UDP
+    port: 53
+    targetPort: 53
+    name: dns
+  type: ClusterIP

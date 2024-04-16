@@ -1,0 +1,34 @@
+# === Presistant Volume 'adguard-pv-conf' ===
+
+apiVersion: v1
+kind: PersistentVolume # Is our initial 'bucket' we use to store data
+metadata:
+  name: adguard-pv-conf
+  namespace: adguard
+spec:
+  capacity: # Sets maximum capacity what can be reqested from this volume
+    storage: 512Mi
+  accessModes:
+    - ReadWriteOnce # Allows acces only from single node
+  nfs:
+    server: 192.168.6.3
+    path: /mnt/Main/k8s/AdGuardHome/conf
+    readOnly: false
+  mountOptions:
+    - nfsvers=4.2
+
+--- # === Presistant Volume Claim 'adguard-pv-conf' ===
+
+apiVersion: v1
+kind: PersistentVolumeClaim # Out pod claim to use. Eats up from PresistentVolume
+metadata:
+  name: adguard-pvc-conf
+  namespace: adguard
+spec:
+  accessModes:
+    - ReadWriteOnce # Allows acces only from single node
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 512Mi
+  volumeName: adguard-pv-conf
