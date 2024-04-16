@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "AdGuardDNS.fullname" . }}
-  namespace: {{ .Chart.Name }}
+  namespace: adguard-dns
   labels:
     {{- include "AdGuardDNS.labels" . | nindent 4 }}
 spec:

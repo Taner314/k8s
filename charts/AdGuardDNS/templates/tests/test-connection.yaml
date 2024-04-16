@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: "{{ include "AdGuardDNS.fullname" . }}-test-connection"
-  namespace: {{ .Chart.Name }}
+  namespace: adguard-dns
   labels:
     {{- include "AdGuardDNS.labels" . | nindent 4 }}
   annotations:
