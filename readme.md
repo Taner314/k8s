@@ -7,14 +7,14 @@
 
 Once Helm has been set up correctly, add the repo as follows:
 
-  helm repo add <alias> https://<orgname>.github.io/helm-charts
+  helm repo add <alias> https://taner314.github.io/k8s
 
 If you had already added this repo earlier, run `helm repo update` to retrieve the latest versions of the packages.  You can then run `helm search repo <alias>` to see the charts.
 
 To install the <chart-name> chart:
 
-    helm install my-<chart-name> <alias>/<chart-name>
+    helm install <chart-name> <alias>/<chart-name>
 
 To uninstall the chart:
 
-    helm delete my-<chart-name>
+    helm delete <chart-name>
