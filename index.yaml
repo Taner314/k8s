@@ -1,0 +1,12 @@
+apiVersion: v1
+entries:
+  AdGuard-DNS:
+  - apiVersion: v2
+    created: "2024-04-16T11:40:27.581914317Z"
+    digest: c12207dd97605ec01612b3fe198a0803637b2e0cbfbe24697fd56166d4f2dfa1
+    name: AdGuard-DNS
+    type: application
+    urls:
+    - https://github.com/Taner314/k8s/releases/download/AdGuard-DNS-v0.0.3/AdGuard-DNS-v0.0.3.tgz
+    version: v0.0.3
+generated: "2024-04-16T11:40:27.581938753Z"
