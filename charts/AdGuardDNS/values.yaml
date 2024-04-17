@@ -40,8 +40,8 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  ip: 192.168.6.1
+  type: LoadBalancer
+  externalTrafficPolicy: local
   ports:
   - protocol: TCP
     port: 3000
